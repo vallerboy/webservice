@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import pl.oskarpolak.webservice.models.UserModel;
 import pl.oskarpolak.webservice.models.repositories.UserRepository;
 
@@ -30,7 +27,10 @@ public class ApiController {
     }
 
     @RequestMapping(value = "/api/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Iterable<UserModel>> getUsers() {
+    public ResponseEntity getUsers(@RequestHeader("App-Password") String password) {
+        if(!password.equals("tajnehaslo")){
+            return new ResponseEntity("Bad credentiales", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 
